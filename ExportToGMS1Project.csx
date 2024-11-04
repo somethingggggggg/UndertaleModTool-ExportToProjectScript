@@ -36,8 +36,8 @@ var resourceNum = Data.Sprites.Count +
     Data.Sounds.Count + 
     Data.Scripts.Count + 
     Data.Fonts.Count + 
-    Data.Paths.Count + 
-    Data.Timelines.Count;
+    Data.Paths.Count; //+ 
+    //Data.Timelines.Count;
 
 // Export sprites
 await ExportSprites();
@@ -64,7 +64,7 @@ await ExportFonts();
 await ExportPaths();
 
 // Export timelines
-await ExportTimelines();
+// await ExportTimelines();
 
 // Generate project file
 GenerateProjectFile();
@@ -322,12 +322,12 @@ void ExportRoom(UndertaleRoom room)
             new XElement("isometric", "0"),
             new XElement("speed", room.Speed.ToString()),
             new XElement("persistent", BoolToString(room.Persistent)),
-            new XElement("colour", room.BackgroundColor.ToString()),
+            new XElement("colour", /*room.BackgroundColor.ToString()*/0),
 			new XElement("showcolour", BoolToString(room.DrawBackgroundColor)),
             new XElement("code", room.CreationCodeId != null ? Decompiler.Decompile(room.CreationCodeId, DECOMPILE_CONTEXT.Value) : ""),
             new XElement("enableViews", BoolToString(room.Flags.HasFlag(UndertaleRoom.RoomEntryFlags.EnableViews))),
             new XElement("clearViewBackground", BoolToString(room.Flags.HasFlag(UndertaleRoom.RoomEntryFlags.ShowColor))),
-            new XElement("clearDisplayBuffer", BoolToString(room.Flags.HasFlag(UndertaleRoom.RoomEntryFlags.ClearDisplayBuffer))),
+            new XElement("clearDisplayBuffer", BoolToString(room.Flags.HasFlag(UndertaleRoom.RoomEntryFlags.DoNotClearDisplayBuffer))),
 			new XElement("makerSettings",
 				new XElement("isSet", 0),
 				new XElement("w", 0),
@@ -357,8 +357,8 @@ void ExportRoom(UndertaleRoom room)
             new XAttribute("name", i.BackgroundDefinition is null ? "" : i.BackgroundDefinition.Name.Content),
             new XAttribute("x", i.X.ToString()),
             new XAttribute("y", i.Y.ToString()),
-            new XAttribute("htiled", i.TileX.ToString()),
-            new XAttribute("vtiled", i.TileY.ToString()),
+            new XAttribute("htiled", i.TiledHorizontally.ToString()), //later
+            new XAttribute("vtiled", i.TiledVertically.ToString()),
             new XAttribute("hspeed", i.SpeedX.ToString()),
             new XAttribute("vspeed", i.SpeedY.ToString()),
             new XAttribute("stretch", "0")
@@ -604,6 +604,7 @@ void ExportPath(UndertalePath path)
     File.WriteAllText(projFolder + "/paths/" + path.Name.Content + ".path.gmx", gmx.ToString() + eol);
 }
 
+/*
 // --------------- Export Timelines ---------------
 async Task ExportTimelines()
 {
@@ -654,7 +655,7 @@ void ExportTimeline(UndertaleTimeline timeline)
 
     File.WriteAllText(projFolder + "/timelines/" + timeline.Name.Content + ".timeline.gmx", gmx.ToString() + eol);
 }
-
+*/
 
 // --------------- Generate project file ---------------
 void GenerateProjectFile()
